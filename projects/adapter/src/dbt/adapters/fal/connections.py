@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from dbt.adapters.fal_experimental.connections import FalCredentials
+from src.dbt.adapters.fal_experimental.connections import FalCredentials
 
 
 @dataclass
