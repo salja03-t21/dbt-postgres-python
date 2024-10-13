@@ -17,14 +17,14 @@ from typing import (
     Callable,
 )
 
-from dbt.exceptions import (
+from dbt_common.exceptions import (
     NotImplementedError,
     InvalidConnectionError,
     DbtInternalError,
     CompilationError,
     FailedToConnectError,
 )
-from dbt.contracts.connection import (
+from dbt.adapters.contracts.connection import (
     Connection,
     Identifier,
     ConnectionState,
@@ -32,9 +32,9 @@ from dbt.contracts.connection import (
     LazyHandle,
     AdapterResponse,
 )
-from dbt.events import AdapterLogger
-from dbt.events.functions import fire_event
-from dbt.events.types import (
+from dbt.adapters.events.logging import AdapterLogger
+from dbt_common.events.functions import fire_event
+from dbt.adapters.events.types import (
     NewConnection,
     ConnectionReused,
     ConnectionLeftOpen,
@@ -176,7 +176,7 @@ class PythonConnectionManager(metaclass=abc.ABCMeta):
         :param int _attempts: Parameter used to keep track of the number of attempts in calling the
             connect function across recursive calls. Passed as an argument to retry_timeout if it
             is a Callable. This parameter should not be set by the initial caller.
-        :raises dbt.exceptions.FailedToConnectError: Upon exhausting all retry attempts without
+        :raises dbt_common.exceptions.FailedToConnectError: Upon exhausting all retry attempts without
             successfully acquiring a handle.
         :return: The given connection with its appropriate state and handle attributes set
             depending on whether we successfully acquired a handle or not.

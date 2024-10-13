@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name="dbt-postgres-python",
-    version="1.7.18",
+    version="1.7.19",
     description="Run python scripts from any dbt project. This project is based on the project https://github.com/fal-ai/fal initially authored by FAL.AI.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/kudryk/dbt-postgres-python",
+    url="https://github.com/salja03-t21/dbt-postgres-python",
     author="Features & Labels, Mark Kudryk",
     author_email="hello@fal.ai, kudryk@me.com",
     packages=find_packages("src"),  # Adjusting to match the 'src' directory
@@ -21,6 +21,7 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "dbt-core>=1.7,<=1.9",
+        "dbt-adapters>=1.7.0",
         "pandas>=1.5.3",
         "numpy<2",
         "virtualenv>=20.21.1",

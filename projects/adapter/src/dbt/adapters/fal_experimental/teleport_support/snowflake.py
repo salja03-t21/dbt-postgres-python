@@ -1,6 +1,6 @@
-from dbt.adapters.fal_experimental.connections import TeleportCredentials
-from dbt.fal.adapters.teleport.impl import TeleportAdapter
-from dbt.fal.adapters.teleport.info import TeleportInfo
+from src.dbt.adapters.fal_experimental.connections import TeleportCredentials
+from src.dbt.fal.adapters.teleport.impl import TeleportAdapter
+from src.dbt.fal.adapters.teleport.info import TeleportInfo
 from dbt.adapters.base.relation import BaseRelation
 from dbt.adapters.base.impl import BaseAdapter
 
@@ -8,7 +8,7 @@ from dbt.adapters.base.impl import BaseAdapter
 class SnowflakeAdapterTeleport(TeleportAdapter):
 
     def __init__(self, db_adapter: BaseAdapter, teleport_credentials: TeleportCredentials):
-        from dbt.adapters.fal_experimental.adapter_support import new_connection
+        from src.dbt.adapters.fal_experimental.adapter_support import new_connection
         self._db_adapter = db_adapter
         self._credentials = teleport_credentials
 

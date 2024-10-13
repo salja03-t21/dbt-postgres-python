@@ -6,15 +6,15 @@ from typing import Iterator
 from dbt.adapters.base.impl import BaseAdapter
 from dbt.adapters.base.meta import AdapterMeta, available
 from dbt.adapters.base.relation import BaseRelation
-from dbt.contracts.connection import AdapterResponse
+from dbt.adapters.contracts.connection import AdapterResponse
 
-from dbt.fal.adapters.teleport.info import (
+from src.dbt.fal.adapters.teleport.info import (
     TeleportInfo,
     S3TeleportInfo,
     LocalTeleportInfo,
 )
-from dbt.fal.adapters.teleport.impl import TeleportAdapter
-from dbt.fal.adapters.python.impl import PythonAdapter
+from src.dbt.fal.adapters.teleport.impl import TeleportAdapter
+from src.dbt.fal.adapters.python.impl import PythonAdapter
 from dbt.parser.manifest import MacroManifest, Manifest, ManifestLoader
 
 from .connections import FalConnectionManager, FalCredentials, TeleportTypeEnum

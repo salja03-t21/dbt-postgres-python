@@ -1,7 +1,7 @@
 from dbt.adapters.base.impl import BaseAdapter
-from dbt.adapters.fal_experimental.connections import TeleportCredentials, TeleportTypeEnum
+from src.dbt.adapters.fal_experimental.connections import TeleportCredentials, TeleportTypeEnum
 
-from dbt.fal.adapters.teleport.impl import TeleportAdapter
+from src.dbt.fal.adapters.teleport.impl import TeleportAdapter
 
 def wrap_db_adapter(db_adapter: BaseAdapter, teleport_credentials: TeleportCredentials) -> TeleportAdapter:
 

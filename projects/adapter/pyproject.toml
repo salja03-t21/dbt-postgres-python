@@ -4,7 +4,7 @@ version = "1.9"
 description = "Run python scripts from any dbt project. This project is based on the project https://github.com/fal-ai/fal initially authored by FAL.AI."
 readme = "README.md"
 homepage = "https://github.com/kudryk/dbt-postgres-python"
-repository = "https://github.com/kudryk/dbt-postgres-python"
+repository = "https://github.com/salja03-t21/dbt-postgres-python"
 authors = [ "Features & Labels <hello@fal.ai>", "Mark Kudryk <kudryk@me.com>" ]
 packages = [
     { include = "dbt", from = "src" },
@@ -17,9 +17,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-dbt-core = ">=1.7,<=1.9"
+dbt-core = ">=1.8.0"
+dbt-adapters = ">=1.7.0"
 pandas = "^1.5.3"
-numpy = "<2"
+numpy = "<3"
 
 ## Environment management related dependencies
 virtualenv = "^20.21.1"
@@ -52,3 +53,4 @@ requests = "^2.32.3"
 [build-system]
 requires = ["poetry-core>=1.5.0"]
 build-backend = "poetry.core.masonry.api"
+

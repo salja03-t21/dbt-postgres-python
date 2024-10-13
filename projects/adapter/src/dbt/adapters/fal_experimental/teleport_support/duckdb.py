@@ -1,17 +1,17 @@
 from contextlib import contextmanager
 from typing import Optional
 
-from dbt.exceptions import DbtRuntimeError
+from dbt_common.exceptions import DbtRuntimeError
 from dbt.adapters.base.relation import BaseRelation
 from dbt.adapters.base.impl import BaseAdapter
 
-from dbt.adapters.fal_experimental.connections import (
+from src.dbt.adapters.fal_experimental.connections import (
     TeleportCredentials,
     TeleportTypeEnum,
 )
 
-from dbt.fal.adapters.teleport.impl import TeleportAdapter
-from dbt.fal.adapters.teleport.info import TeleportInfo
+from src.dbt.fal.adapters.teleport.impl import TeleportAdapter
+from src.dbt.fal.adapters.teleport.info import TeleportInfo
 
 
 class DuckDBAdapterTeleport(TeleportAdapter):

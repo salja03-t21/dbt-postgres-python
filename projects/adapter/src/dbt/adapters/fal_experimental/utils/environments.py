@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Any, ClassVar, Dict, Iterator, List, Optional, Tuple
 import importlib_metadata
 
-from dbt.events.adapter_endpoint import AdapterLogger
-from dbt.exceptions import DbtRuntimeError
+from dbt_common.events.adapter_endpoint import AdapterLogger
+from dbt_common.exceptions import DbtRuntimeError
 from dbt.config.runtime import RuntimeConfig
 
 from isolate.backends import BaseEnvironment, BasicCallable, EnvironmentConnection

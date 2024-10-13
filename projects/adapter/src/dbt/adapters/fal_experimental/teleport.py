@@ -9,21 +9,21 @@ from tempfile import NamedTemporaryFile
 from typing import Any, Callable, Dict, NewType, Optional
 
 from dbt.config.runtime import RuntimeConfig
-from dbt.contracts.connection import AdapterResponse
+from dbt.adapters.contracts.connection import AdapterResponse
 from dbt.flags import get_flags, Namespace
 
 from fal import FalServerlessHost, isolated
-from dbt.adapters.fal_experimental.connections import TeleportTypeEnum
-from dbt.adapters.fal_experimental.utils.environments import (
+from src.dbt.adapters.fal_experimental.connections import TeleportTypeEnum
+from src.dbt.adapters.fal_experimental.utils.environments import (
     EnvironmentDefinition,
     get_default_pip_dependencies,
 )
-from dbt.adapters.fal_experimental.utils import (
+from src.dbt.adapters.fal_experimental.utils import (
     extra_path,
     get_fal_scripts_path,
     retrieve_symbol,
 )
-from dbt.fal.adapters.teleport.info import TeleportInfo
+from src.dbt.fal.adapters.teleport.info import TeleportInfo
 
 
 DataLocation = NewType("DataLocation", Dict[str, str])
