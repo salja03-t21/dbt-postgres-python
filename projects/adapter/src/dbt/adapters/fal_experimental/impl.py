@@ -70,8 +70,10 @@ class FalAdapterMixin(TeleportAdapter, metaclass=AdapterMeta):
         return self._db_adapter.load_macro_manifest()
 
     def submit_python_job(
+        self, parsed_model: dict, compiled_code: str
+    ) -> AdapterResponse:
         """
-        Submits a Python job for execution in the target environment, handling teleportation
+        Submits a Python job for execution in the target environment, handling teleport
         if necessary.
 
         Args:
@@ -81,8 +83,6 @@ class FalAdapterMixin(TeleportAdapter, metaclass=AdapterMeta):
         Returns:
             AdapterResponse: The response from the adapter after execution.
         """
-        self, parsed_model: dict, compiled_code: str
-    ) -> AdapterResponse:
         """Execute the given `compiled_code` in the target environment."""
         config_dict = parsed_model["config"]
 

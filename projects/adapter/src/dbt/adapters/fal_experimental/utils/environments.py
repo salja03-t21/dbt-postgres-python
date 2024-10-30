@@ -51,6 +51,11 @@ class EnvironmentDefinition:
 
 
 def fetch_environment(
+    project_root: str,
+    environment_name: str,
+    machine_type: str = "S",
+    credentials: Optional[Any] = None,
+) -> Tuple[EnvironmentDefinition, bool]:
     """
     Fetch the environment with the given name from the project's fal_project.yml file.
 
@@ -63,13 +68,7 @@ def fetch_environment(
     Returns:
         Tuple[EnvironmentDefinition, bool]: The environment definition and a boolean indicating if it's local.
     """
-    project_root: str,
-    environment_name: str,
-    machine_type: str = "S",
-    credentials: Optional[Any] = None,
-) -> Tuple[EnvironmentDefinition, bool]:
-    """Fetch the environment with the given name from the project's
-    fal_project.yml file."""
+
     # Local is a special environment where it doesn't need to be defined
     # since it will mirror user's execution context directly.
     if environment_name == "local":
@@ -135,6 +134,8 @@ def db_adapter_config(config: RuntimeConfig) -> RuntimeConfig:
 
 
 def load_environments(
+    base_dir: str, machine_type: str = "S", credentials: Optional[Any] = None
+) -> Dict[str, EnvironmentDefinition]:
     """
     Load environments from the fal_project.yml file.
 
@@ -146,8 +147,6 @@ def load_environments(
     Returns:
         Dict[str, EnvironmentDefinition]: A dictionary of environment definitions.
     """
-    base_dir: str, machine_type: str = "S", credentials: Optional[Any] = None
-) -> Dict[str, EnvironmentDefinition]:
     import os
 
     fal_project_path = os.path.join(base_dir, "fal_project.yml")
@@ -175,6 +174,12 @@ def load_environments(
 
 
 def create_environment(
+    name: str,
+    kind: str,
+    config: Dict[str, Any],
+    machine_type: str = "S",
+    credentials: Optional[Any] = None,
+) -> EnvironmentDefinition:
     """
     Create an environment definition based on the provided configuration.
 
@@ -188,12 +193,6 @@ def create_environment(
     Returns:
         EnvironmentDefinition: The created environment definition.
     """
-    name: str,
-    kind: str,
-    config: Dict[str, Any],
-    machine_type: str = "S",
-    credentials: Optional[Any] = None,
-) -> EnvironmentDefinition:
     if kind not in ["venv", "conda"]:
         raise ValueError(
             f"Invalid environment type (of {kind}) for {name}. Please choose from: "
@@ -253,6 +252,8 @@ def _get_required_key(data: Dict[str, Any], name: str) -> Any:
 
 
 def _parse_remote_config(
+    config: Dict[str, Any], parsed_config: Dict[str, Any]
+) -> Dict[str, Any]:
     """
     Parse the remote configuration from the provided config dictionary.
 
@@ -263,8 +264,6 @@ def _parse_remote_config(
     Returns:
         Dict[str, Any]: The parsed remote configuration.
     """
-    config: Dict[str, Any], parsed_config: Dict[str, Any]
-) -> Dict[str, Any]:
     assert config.get("remote_type"), "remote_type needs to be specified."
 
     remote_type = REMOTE_TYPES_DICT.get(config["remote_type"])
@@ -302,6 +301,10 @@ def _get_package_from_type(adapter_type: str):
 
 
 def _get_dbt_packages(
+    adapter_type: str,
+    is_teleport: bool = False,
+    is_remote: bool = False,
+) -> Iterator[Tuple[str, Optional[str]]]:
     """
     Retrieve the DBT packages for the given adapter type.
 
@@ -313,10 +316,6 @@ def _get_dbt_packages(
     Returns:
         Iterator[Tuple[str, Optional[str]]]: An iterator of package names and versions.
     """
-    adapter_type: str,
-    is_teleport: bool = False,
-    is_remote: bool = False,
-) -> Iterator[Tuple[str, Optional[str]]]:
     dbt_adapter = _get_package_from_type(adapter_type)
     for dbt_plugin_name in [dbt_adapter]:
         distribution = importlib_metadata.distribution(dbt_plugin_name)
@@ -435,6 +434,10 @@ def _get_project_root_path(package: str) -> Path:
 
 
 def get_default_requirements(
+    adapter_type: str,
+    is_teleport: bool = False,
+    is_remote: bool = False,
+) -> Iterator[Tuple[str, Optional[str]]]:
     """
     Retrieve the default requirements for the given adapter type.
 
@@ -446,15 +449,15 @@ def get_default_requirements(
     Returns:
         Iterator[Tuple[str, Optional[str]]]: An iterator of package names and versions.
     """
-    adapter_type: str,
-    is_teleport: bool = False,
-    is_remote: bool = False,
-) -> Iterator[Tuple[str, Optional[str]]]:
     yield from _get_dbt_packages(adapter_type, is_teleport, is_remote)
 
 
 @cache_static
 def get_default_pip_dependencies(
+    adapter_type: str,
+    is_teleport: bool = False,
+    is_remote: bool = False,
+) -> List[str]:
     """
     Retrieve the default pip dependencies for the given adapter type.
 
@@ -466,10 +469,6 @@ def get_default_pip_dependencies(
     Returns:
         List[str]: A list of pip dependency strings.
     """
-    adapter_type: str,
-    is_teleport: bool = False,
-    is_remote: bool = False,
-) -> List[str]:
     return [
         f"{package}=={version}" if version else package
         for package, version in get_default_requirements(

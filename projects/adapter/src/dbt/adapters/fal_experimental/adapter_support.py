@@ -52,6 +52,13 @@ def drop_relation_if_it_exists(adapter: BaseAdapter, relation: BaseRelation) -> 
 
 
 def write_df_to_relation(
+
+    adapter: BaseAdapter,
+    relation: BaseRelation,
+    dataframe: pd.DataFrame,
+    *,
+    if_exists: str = "replace",
+) -> AdapterResponse:
     """
     Writes the given dataframe to the specified relation in the database.
 
@@ -64,12 +71,6 @@ def write_df_to_relation(
     Returns:
         AdapterResponse: The response from the adapter after execution.
     """
-    adapter: BaseAdapter,
-    relation: BaseRelation,
-    dataframe: pd.DataFrame,
-    *,
-    if_exists: str = "replace",
-) -> AdapterResponse:
     """Generic version of the write_df_to_relation. Materialize the given
     dataframe to the targeted relation on the adapter."""
 

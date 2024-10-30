@@ -59,6 +59,13 @@ def run_with_adapter(code: str, adapter: BaseAdapter, config: RuntimeConfig) -> 
 
 
 def _isolated_runner(
+    code: str,
+    flags: Namespace,
+    config: RuntimeConfig,
+    manifest: Manifest,
+    macro_manifest: MacroManifest,
+    local_packages: Optional[bytes] = None,
+) -> Any:
     """
     Runs the provided code in an isolated environment, reconstructing the DB adapter
     from the given configuration.
@@ -74,13 +81,6 @@ def _isolated_runner(
     Returns:
         Any: The result of executing the code.
     """
-    code: str,
-    flags: Namespace,
-    config: RuntimeConfig,
-    manifest: Manifest,
-    macro_manifest: MacroManifest,
-    local_packages: Optional[bytes] = None,
-) -> Any:
     # This function can be run in an entirely separate
     # process or an environment, so we need to reconstruct
     # the DB adapter solely from the config.
@@ -98,6 +98,14 @@ def _isolated_runner(
 
 
 def run_in_environment_with_adapter(
+
+    environment: EnvironmentDefinition,
+    code: str,
+    config: RuntimeConfig,
+    manifest: Manifest,
+    macro_manifest: MacroManifest,
+    adapter_type: str
+) -> AdapterResponse:
     """
     Executes the 'main' function in the provided code within the specified environment.
 
@@ -112,13 +120,6 @@ def run_in_environment_with_adapter(
     Returns:
         AdapterResponse: The response from the adapter after execution.
     """
-    environment: EnvironmentDefinition,
-    code: str,
-    config: RuntimeConfig,
-    manifest: Manifest,
-    macro_manifest: MacroManifest,
-    adapter_type: str
-) -> AdapterResponse:
     """Run the 'main' function inside the given code on the
     specified environment.
 
