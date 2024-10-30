@@ -26,9 +26,6 @@ class FalCredentialsWrapper:
     @property
     def type(self):
         """
-        Determines the type of the adapter based on the current model's file context.
-        """
-        """
         Determines the type of the credentials based on the current model's file context.
         """
         # Determine context using the file type approach
@@ -42,18 +39,14 @@ class FalCredentialsWrapper:
             raise ValueError(f"Unknown file extension in {model_file_path}")
 
     def __getattr__(self, name: str) -> Any:
-        """
-        Proxies attribute access to the underlying database credentials.
-        """
+
         """
         Directly proxy to the DB adapter, just shadowing the type
         """
         return getattr(self._db_creds, name)
 
     def get_current_model_file_path(self) -> str:
-        """
-        Retrieves the current model's file path from the dbt context or environment.
-        """
+
         """
         Retrieves the current model's file path from the dbt context or environment.
         """
@@ -127,8 +120,6 @@ class FalEncAdapterWrapper(FalAdapterMixin):
     def __getattr__(self, name):
         """
         Proxies attribute access to the underlying database adapter or the superclass.
-        """
-        """
         Directly proxy to the DB adapter, Python adapter in this case does what we explicitly define in this class.
         """
         if hasattr(self._db_adapter, name):
@@ -138,9 +129,6 @@ class FalEncAdapterWrapper(FalAdapterMixin):
 
 
 def get_context_from_file(file_path: str) -> str:
-    """
-    Determines the execution context based on the file extension.
-    """
     """
     Determine the execution context based on the file extension.
     :param file_path: Path to the model file being executed.
