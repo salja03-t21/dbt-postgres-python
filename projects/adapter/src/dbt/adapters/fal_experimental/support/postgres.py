@@ -1,3 +1,8 @@
+"""
+This module provides support for interacting with PostgreSQL databases using the FAL adapter.
+It includes functions to read from and write to PostgreSQL relations as Pandas DataFrames.
+"""
+
 import csv
 from io import StringIO
 
@@ -11,6 +16,16 @@ from dbt.adapters.postgres import PostgresAdapter
 
 
 def read_relation_as_df(
+    """
+    Reads a PostgreSQL relation into a Pandas DataFrame.
+
+    Args:
+        adapter (PostgresAdapter): The DBT adapter to use.
+        relation (BaseRelation): The relation to read.
+
+    Returns:
+        pd.DataFrame: The resulting DataFrame containing the relation data.
+    """
     adapter: PostgresAdapter, relation: BaseRelation
 ) -> pd.DataFrame:
     assert adapter.type() == "postgres"
@@ -31,6 +46,18 @@ def read_relation_as_df(
 
 
 def write_df_to_relation(
+    """
+    Writes a Pandas DataFrame to a PostgreSQL relation.
+
+    Args:
+        adapter (PostgresAdapter): The DBT adapter to use.
+        data (pd.DataFrame): The DataFrame to write.
+        relation (BaseRelation): The target relation.
+        if_exists (str): The behavior if the relation already exists.
+
+    Returns:
+        AdapterResponse: The response from the adapter after execution.
+    """
     adapter: PostgresAdapter,
     data: pd.DataFrame,
     relation: BaseRelation,
@@ -70,6 +97,11 @@ def write_df_to_relation(
 
 
 def _psql_insert_copy(table, conn, keys, data_iter):
+    """
+    Alternative to_sql method for PostgreSQL.
+
+    Adapted from https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#io-sql-method
+    """
     """Alternative to_sql method for PostgreSQL.
 
     Adapted from https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#io-sql-method

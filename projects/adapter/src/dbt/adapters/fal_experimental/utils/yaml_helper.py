@@ -1,3 +1,8 @@
+"""
+This module provides utilities for loading and parsing YAML files, including
+functions to handle syntax errors and provide contextualized error messages.
+"""
+
 from typing import Any, Dict, Optional
 import yaml
 import yaml.scanner
@@ -37,6 +42,16 @@ def prefix_with_line_numbers(string, no_start, no_end):
 
 
 def contextualized_yaml_error(raw_contents, error):
+    """
+    Generate a contextualized error message for a YAML syntax error.
+
+    Args:
+        raw_contents (str): The raw YAML contents.
+        error (yaml.YAMLError): The YAML error.
+
+    Returns:
+        str: The formatted error message.
+    """
     mark = error.problem_mark
 
     min_line = max(mark.line - 3, 0)
@@ -50,10 +65,31 @@ def contextualized_yaml_error(raw_contents, error):
 
 
 def safe_load(contents) -> Dict[str, Any]:
+    """
+    Safely load YAML contents into a dictionary.
+
+    Args:
+        contents (str): The YAML contents.
+
+    Returns:
+        Dict[str, Any]: The loaded dictionary.
+    """
     return yaml.load(contents, Loader=SafeLoader)
 
 
 def load_yaml_text(contents):
+    """
+    Load YAML text and handle any syntax errors.
+
+    Args:
+        contents (str): The YAML contents.
+
+    Returns:
+        Any: The loaded YAML data.
+
+    Raises:
+        Exception: If there is a syntax error in the YAML.
+    """
     try:
         return safe_load(contents)
     except (yaml.scanner.ScannerError, yaml.YAMLError) as e:
@@ -66,6 +102,16 @@ def load_yaml_text(contents):
 
 
 def _load_file_contents(path: str, strip: bool = True) -> str:
+    """
+    Load the contents of a file as a string.
+
+    Args:
+        path (str): The path to the file.
+        strip (bool): Whether to strip whitespace from the contents.
+
+    Returns:
+        str: The file contents.
+    """
     with open(path, "rb") as handle:
         to_return = handle.read().decode("utf-8")
 
@@ -76,5 +122,14 @@ def _load_file_contents(path: str, strip: bool = True) -> str:
 
 
 def load_yaml(path):
+    """
+    Load a YAML file and return its contents as a dictionary.
+
+    Args:
+        path (str): The path to the YAML file.
+
+    Returns:
+        Any: The loaded YAML data.
+    """
     contents = _load_file_contents(path)
     return load_yaml_text(contents)
