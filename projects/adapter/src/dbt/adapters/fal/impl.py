@@ -17,12 +17,18 @@ from .load_db_profile import load_profiles_info_1_5
 
 
 class FalConfigs(AdapterConfig):
+    """
+    Configuration class for FAL, including environment and machine settings.
+    """
     fal_environment: Optional[str]
     fal_machine: Optional[str]
 
 
 @contextmanager
 def _release_plugin_lock():
+    """
+    Context manager to release and re-acquire the plugin lock.
+    """
     FACTORY.lock.release()
     try:
         yield
@@ -41,12 +47,18 @@ if not is_agent():
 
 
 class FalEncAdapter(BaseAdapter):
+    """
+    Adapter class for FAL, handling the connection and configuration setup.
+    """
     Relation = DB_RELATION  # type: ignore
 
     # TODO: how do we actually use this?
     AdapterSpecificConfigs = FalConfigs
 
     def __new__(cls, config):
+        """
+        Creates a new instance of the FAL adapter, setting up the necessary credentials and configurations.
+        """
         # There are two different credentials types which can be passed to FalEncAdapter
         # 1. FalEncCredentials
         # 2. FalCredentialsWrapper
@@ -90,4 +102,7 @@ class FalEncAdapter(BaseAdapter):
 
     @classmethod
     def type(cls):
+        """
+        Returns the type of the adapter, which is 'fal'.
+        """
         return "fal"

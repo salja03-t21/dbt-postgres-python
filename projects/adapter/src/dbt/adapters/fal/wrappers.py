@@ -12,13 +12,25 @@ from ..fal_experimental.impl import FalAdapterMixin
 import os
 
 class FalCredentialsWrapper:
+    """
+    Wrapper class for FAL credentials, allowing for dynamic type determination based on context.
+    """
     _db_creds: Optional[Credentials] = None
 
     def __init__(self, db_creds: Credentials):
+        """
+        Initializes the wrapper with the given database credentials.
+        """
         self._db_creds = db_creds
 
     @property
     def type(self):
+        """
+        Determines the type of the adapter based on the current model's file context.
+        """
+        """
+        Determines the type of the credentials based on the current model's file context.
+        """
         # Determine context using the file type approach
         model_file_path = self.get_current_model_file_path()  # Placeholder for actual implementation
         context = get_context_from_file(model_file_path)
@@ -31,11 +43,20 @@ class FalCredentialsWrapper:
 
     def __getattr__(self, name: str) -> Any:
         """
+        Proxies attribute access to the underlying database credentials.
+        """
+        """
         Directly proxy to the DB adapter, just shadowing the type
         """
         return getattr(self._db_creds, name)
 
     def get_current_model_file_path(self) -> str:
+        """
+        Retrieves the current model's file path from the dbt context or environment.
+        """
+        """
+        Retrieves the current model's file path from the dbt context or environment.
+        """
         # Implement logic to retrieve the current model's file path
         # This function should access the dbt context or environment to get the current model file path
         # Placeholder: return a static path or integrate with dbt internals
@@ -43,7 +64,13 @@ class FalCredentialsWrapper:
 
 
 class FalEncAdapterWrapper(FalAdapterMixin):
+    """
+    Wrapper class for the FAL adapter, integrating with the database adapter.
+    """
     def __init__(self, db_adapter_type: Type[BaseAdapter], config):
+        """
+        Initializes the wrapper with the given database adapter type and configuration.
+        """
         # Use the db_adapter_type connection manager
         self.ConnectionManager = db_adapter_type.ConnectionManager
 
@@ -54,10 +81,16 @@ class FalEncAdapterWrapper(FalAdapterMixin):
         self._parse_replacements_.update(self._db_adapter._parse_replacements_)
 
     def submit_python_job(self, *args, **kwargs):
+        """
+        Submits a Python job using the FAL adapter.
+        """
         return super().submit_python_job(*args, **kwargs)
 
     @available
     def db_materialization(self, context: dict, materialization: str):
+        """
+        Executes a database materialization using the specified context and materialization name.
+        """
         materialization_macro = self.manifest.find_materialization_macro_by_name(
             self.config.project_name, materialization, self._db_adapter.type()
         )
@@ -69,6 +102,9 @@ class FalEncAdapterWrapper(FalAdapterMixin):
     @property
     @cache_static
     def manifest(self):
+        """
+        Loads and returns the full manifest for the current configuration.
+        """
         return ManifestLoader.get_full_manifest(self.config)
 
     def type(self):
@@ -90,6 +126,9 @@ class FalEncAdapterWrapper(FalAdapterMixin):
 
     def __getattr__(self, name):
         """
+        Proxies attribute access to the underlying database adapter or the superclass.
+        """
+        """
         Directly proxy to the DB adapter, Python adapter in this case does what we explicitly define in this class.
         """
         if hasattr(self._db_adapter, name):
@@ -99,6 +138,9 @@ class FalEncAdapterWrapper(FalAdapterMixin):
 
 
 def get_context_from_file(file_path: str) -> str:
+    """
+    Determines the execution context based on the file extension.
+    """
     """
     Determine the execution context based on the file extension.
     :param file_path: Path to the model file being executed.
@@ -113,6 +155,9 @@ def get_context_from_file(file_path: str) -> str:
 
 
 def find_funcs_in_stack(funcs: Set[str]) -> bool:
+    """
+    Checks if any of the specified functions are present in the current call stack.
+    """
     import inspect
 
     frame = inspect.currentframe()

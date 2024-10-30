@@ -12,6 +12,9 @@ def find_profile_name(
     project_root: str,
     profile_renderer: ProfileRenderer,
 ):
+    """
+    Determines the profile name to use, either from an override or from the project configuration.
+    """
     if profile_override is not None:
         profile_name = profile_override
     else:
@@ -26,6 +29,9 @@ def find_profile_name(
 def find_target_name(
     target_override: Optional[str], raw_profile: dict, profile_renderer: ProfileRenderer
 ):
+    """
+    Determines the target name to use, either from an override or from the profile configuration.
+    """
     if target_override is not None:
         target_name = target_override
     elif "target" in raw_profile:
@@ -38,6 +44,9 @@ def find_target_name(
 
 
 def load_profiles_info_1_5() -> Tuple[Profile, Dict[str, Any]]:
+    """
+    Loads the profile information for version 1.5, including database profile and override properties.
+    """
     flags: Namespace = get_flags()
 
     profile_renderer = ProfileRenderer(getattr(flags, "VARS", {}))
