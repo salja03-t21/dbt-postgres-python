@@ -1,3 +1,9 @@
+"""
+This module defines the FalAdapterMixin and FalAdapter classes, which extend the functionality
+of the TeleportAdapter and PythonAdapter to support execution of Python code in various environments
+and handle teleportation of data between local and external storage.
+"""
+
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -29,6 +35,10 @@ from .utils.environments import fetch_environment, db_adapter_config
 
 
 class FalAdapterMixin(TeleportAdapter, metaclass=AdapterMeta):
+    """
+    A mixin class for the FAL adapter, providing methods to handle teleportation
+    and execution of Python code in different environments.
+    """
     ConnectionManager = FalConnectionManager
 
     def __init__(self, config, db_adapter: BaseAdapter):
@@ -60,6 +70,17 @@ class FalAdapterMixin(TeleportAdapter, metaclass=AdapterMeta):
         return self._db_adapter.load_macro_manifest()
 
     def submit_python_job(
+        """
+        Submits a Python job for execution in the target environment, handling teleportation
+        if necessary.
+
+        Args:
+            parsed_model (dict): The parsed model configuration.
+            compiled_code (str): The compiled Python code to execute.
+
+        Returns:
+            AdapterResponse: The response from the adapter after execution.
+        """
         self, parsed_model: dict, compiled_code: str
     ) -> AdapterResponse:
         """Execute the given `compiled_code` in the target environment."""

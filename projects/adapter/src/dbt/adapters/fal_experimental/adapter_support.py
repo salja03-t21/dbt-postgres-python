@@ -1,3 +1,9 @@
+"""
+This module provides support functions for the FAL adapter, including utilities
+for reading and writing dataframes to relations, preparing functions for adapter use,
+and managing adapter connections and caches.
+"""
+
 import functools
 from typing import Any
 
@@ -30,6 +36,13 @@ def _get_alchemy_engine(adapter: BaseAdapter, connection: Connection) -> Any:
 
 
 def drop_relation_if_it_exists(adapter: BaseAdapter, relation: BaseRelation) -> None:
+    """
+    Drops the specified relation if it exists in the database.
+
+    Args:
+        adapter (BaseAdapter): The DBT adapter to use.
+        relation (BaseRelation): The relation to drop.
+    """
     if adapter.get_relation(
         database=relation.database,
         schema=relation.schema,
@@ -39,6 +52,18 @@ def drop_relation_if_it_exists(adapter: BaseAdapter, relation: BaseRelation) -> 
 
 
 def write_df_to_relation(
+    """
+    Writes the given dataframe to the specified relation in the database.
+
+    Args:
+        adapter (BaseAdapter): The DBT adapter to use.
+        relation (BaseRelation): The target relation.
+        dataframe (pd.DataFrame): The dataframe to write.
+        if_exists (str): The behavior if the relation already exists.
+
+    Returns:
+        AdapterResponse: The response from the adapter after execution.
+    """
     adapter: BaseAdapter,
     relation: BaseRelation,
     dataframe: pd.DataFrame,

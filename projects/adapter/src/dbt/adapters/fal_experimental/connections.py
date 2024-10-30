@@ -1,3 +1,9 @@
+"""
+This module defines connection-related classes and enums for the FAL adapter,
+including credentials and connection management for teleportation and execution
+of Python code in different environments.
+"""
+
 from dataclasses import dataclass
 from typing import Optional
 import os
@@ -15,6 +21,9 @@ DEFAULT_HOSTS = {
 
 
 class TeleportTypeEnum(StrEnum):
+    """
+    Enum representing the types of teleportation supported by the FAL adapter.
+    """
     LOCAL = "local"
     REMOTE_S3 = "s3"
 
@@ -34,6 +43,10 @@ class TeleportCredentials(ExtensibleDbtClassMixin):
 
 
 class FalConnectionManager(PythonConnectionManager):
+    """
+    Manages connections for the FAL adapter, extending the PythonConnectionManager
+    to handle teleportation and execution of Python code.
+    """
     TYPE = "fal_experimental"
 
     @classmethod

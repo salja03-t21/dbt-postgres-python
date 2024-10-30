@@ -1,3 +1,9 @@
+"""
+This module provides functionality to run code with a DBT adapter in different environments.
+It includes functions to execute code in isolated environments and handle local and remote
+package dependencies.
+"""
+
 from __future__ import annotations
 
 import zipfile
@@ -30,6 +36,17 @@ from .utils import extra_path, get_fal_scripts_path, retrieve_symbol
 
 
 def run_with_adapter(code: str, adapter: BaseAdapter, config: RuntimeConfig) -> Any:
+    """
+    Executes the provided code using the specified DBT adapter and configuration.
+    
+    Args:
+        code (str): The code to execute.
+        adapter (BaseAdapter): The DBT adapter to use.
+        config (RuntimeConfig): The runtime configuration for DBT.
+
+    Returns:
+        Any: The result of executing the code.
+    """
     # main symbol is defined during dbt-fal's compilation
     # and acts as an entrypoint for us to run the model.
     fal_scripts_path = str(get_fal_scripts_path(config))
@@ -42,6 +59,21 @@ def run_with_adapter(code: str, adapter: BaseAdapter, config: RuntimeConfig) -> 
 
 
 def _isolated_runner(
+    """
+    Runs the provided code in an isolated environment, reconstructing the DB adapter
+    from the given configuration.
+
+    Args:
+        code (str): The code to execute.
+        flags (Namespace): The DBT flags.
+        config (RuntimeConfig): The runtime configuration for DBT.
+        manifest (Manifest): The DBT manifest.
+        macro_manifest (MacroManifest): The macro manifest.
+        local_packages (Optional[bytes]): Local package dependencies, if any.
+
+    Returns:
+        Any: The result of executing the code.
+    """
     code: str,
     flags: Namespace,
     config: RuntimeConfig,
@@ -66,6 +98,20 @@ def _isolated_runner(
 
 
 def run_in_environment_with_adapter(
+    """
+    Executes the 'main' function in the provided code within the specified environment.
+
+    Args:
+        environment (EnvironmentDefinition): The environment definition.
+        code (str): The code to execute.
+        config (RuntimeConfig): The runtime configuration for DBT.
+        manifest (Manifest): The DBT manifest.
+        macro_manifest (MacroManifest): The macro manifest.
+        adapter_type (str): The type of adapter to use.
+
+    Returns:
+        AdapterResponse: The response from the adapter after execution.
+    """
     environment: EnvironmentDefinition,
     code: str,
     config: RuntimeConfig,
