@@ -1,3 +1,14 @@
+"""
+This module defines the connection-related classes for the FAL adapter, focusing on credentials
+management. It includes:
+
+- FalEncCredentials: An extension of the FalCredentials class, adding a database profile attribute.
+  This class provides methods to retrieve connection keys and determine the type and unique field
+  for the credentials.
+
+The module is designed to integrate with the experimental FAL connection management system.
+"""
+
 from dataclasses import dataclass
 from src.dbt.adapters.fal_experimental.connections import FalCredentials
 

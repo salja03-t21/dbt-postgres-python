@@ -1,3 +1,16 @@
+"""
+This module handles the loading and management of profile information for the FAL adapter. It
+includes functions to determine profile and target names, and to load profile information for
+version 1.5. Key components are:
+
+- find_profile_name: Determines the profile name to use based on overrides or project configuration.
+- find_target_name: Determines the target name to use based on overrides or profile configuration.
+- load_profiles_info_1_5: Loads profile information, including database profile and override
+  properties, ensuring that the necessary db_profile property is set.
+
+The module is inspired by dbt-core's configuration management and adapts it for FAL's needs.
+"""
+
 from typing import Dict, Any, Tuple, Optional
 
 from dbt.flags import get_flags, Namespace

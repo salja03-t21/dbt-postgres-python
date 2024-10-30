@@ -1,3 +1,16 @@
+"""
+This module provides wrapper classes for the FAL adapter, facilitating integration with database
+adapters and dynamic credential management. It includes:
+
+- FalCredentialsWrapper: A wrapper for FAL credentials that allows dynamic type determination based
+  on the execution context. It proxies attribute access to the underlying database credentials.
+- FalEncAdapterWrapper: A wrapper for the FAL adapter that integrates with the database adapter,
+  providing methods to submit Python jobs and execute database materializations.
+
+The module also includes utility functions to determine the execution context from file paths and
+check for specific functions in the call stack.
+"""
+
 from typing import Any, Optional, Type, Set
 
 from dbt.adapters.factory import get_adapter_by_type
