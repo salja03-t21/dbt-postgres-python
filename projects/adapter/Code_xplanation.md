@@ -97,3 +97,48 @@ To start working with this adapter, familiarize yourself with the key components
 - Write tests for new functionalities and ensure existing tests pass.
 
 This document should serve as a starting point for understanding and contributing to the dbt adapter in this project. If you have any questions or need further clarification, feel free to reach out to the project maintainers.
+
+## Additional Details
+
+### `python/connections.py`
+
+- **Purpose:** Manages connections for Python-based adapters, providing a framework for opening, closing, and executing commands on connections.
+- **Key Classes:**
+  - `PythonConnectionManager`: An abstract base class that defines the interface for connection management, including methods for opening and executing commands on connections.
+  - `FalConnectionManager`: Extends `PythonConnectionManager` to handle FAL-specific connection logic, including teleportation and execution of Python code.
+- **Key Methods:**
+  - `set_connection_name`: Sets or reuses a connection with a specified name, managing connection state and handle.
+  - `retry_connection`: Attempts to establish a connection, retrying on specified exceptions.
+  - `cancel_open`: Cancels all open connections except the current one.
+  - `execute`: Abstract method to execute compiled code, to be implemented by subclasses.
+
+### `fal_experimental/impl.py`
+
+- **Purpose:** Implements the `FalAdapterMixin` and `FalAdapter` classes, extending the functionality of `TeleportAdapter` and `PythonAdapter` to support Python code execution and data teleportation.
+- **Key Components:**
+  - `FalAdapterMixin`: Provides methods for handling teleportation and executing Python code in different environments.
+  - `FalAdapter`: Combines `FalAdapterMixin` and `PythonAdapter` to provide a comprehensive adapter solution for FAL.
+- **Key Methods:**
+  - `submit_python_job`: Submits a Python job for execution, handling teleportation if necessary.
+  - `teleport_from_external_storage`: Stores teleport URLs for later use.
+  - `teleport_to_external_storage`: Returns the path for data already in external storage.
+
+### `fal_experimental/adapter_support.py`
+
+- **Purpose:** Provides support functions for the FAL adapter, including utilities for reading and writing dataframes to relations and managing adapter connections and caches.
+- **Key Functions:**
+  - `drop_relation_if_it_exists`: Drops a specified relation if it exists in the database.
+  - `write_df_to_relation`: Writes a dataframe to a specified relation in the database.
+  - `read_relation_as_df`: Reads a relation into a dataframe.
+  - `prepare_for_adapter`: Prepares a function to be used with string-like inputs for relations on the given adapter.
+
+### `fal_experimental/connections.py`
+
+- **Purpose:** Defines connection-related classes and enums for the FAL adapter, including credentials and connection management for teleportation and execution of Python code.
+- **Key Classes:**
+  - `FalConnectionManager`: Manages connections for the FAL adapter, extending `PythonConnectionManager`.
+  - `FalCredentials`: Defines credentials for FAL, including teleportation settings.
+- **Key Enums:**
+  - `TeleportTypeEnum`: Represents the types of teleportation supported by the FAL adapter.
+
+This document should serve as a starting point for understanding and contributing to the dbt adapter in this project. If you have any questions or need further clarification, feel free to reach out to the project maintainers.
