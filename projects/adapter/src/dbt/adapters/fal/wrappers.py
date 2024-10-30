@@ -9,7 +9,7 @@ from dbt.clients.jinja import MacroGenerator
 
 from ..fal_experimental.utils import cache_static
 from ..fal_experimental.impl import FalAdapterMixin
-
+import os
 
 class FalCredentialsWrapper:
     _db_creds: Optional[Credentials] = None
@@ -19,17 +19,27 @@ class FalCredentialsWrapper:
 
     @property
     def type(self):
-        if find_funcs_in_stack({"to_target_dict", "db_materialization"}):
-            # This makes sense for both SQL and Python because the target is always the db
+        # Determine context using the file type approach
+        model_file_path = self.get_current_model_file_path()  # Placeholder for actual implementation
+        context = get_context_from_file(model_file_path)
+        if context == 'sql':
             return self._db_creds.type
-
-        return "fal"
+        elif context == 'python':
+            return 'fal'
+        else:
+            raise ValueError(f"Unknown file extension in {model_file_path}")
 
     def __getattr__(self, name: str) -> Any:
         """
         Directly proxy to the DB adapter, just shadowing the type
         """
         return getattr(self._db_creds, name)
+
+    def get_current_model_file_path(self) -> str:
+        # Implement logic to retrieve the current model's file path
+        # This function should access the dbt context or environment to get the current model file path
+        # Placeholder: return a static path or integrate with dbt internals
+        return "/path/to/current/model/file.sql"  # Example placeholder
 
 
 class FalEncAdapterWrapper(FalAdapterMixin):
@@ -40,13 +50,7 @@ class FalEncAdapterWrapper(FalAdapterMixin):
         db_adapter = get_adapter_by_type(db_adapter_type.type())
         super().__init__(config, db_adapter)
 
-        # HACK: A Python adapter does not have self._available_ all the attributes a DB adapter does.
-        # Since we use the DB adapter as the storage for the Python adapter, we must proxy to it
-        # all the unhandled calls.
-
-        # self._available_ is set by metaclass=AdapterMeta
         self._available_ = self._db_adapter._available_.union(self._available_)
-        # self._parse_replacements_ is set by metaclass=AdapterMeta
         self._parse_replacements_.update(self._db_adapter._parse_replacements_)
 
     def submit_python_job(self, *args, **kwargs):
@@ -54,12 +58,10 @@ class FalEncAdapterWrapper(FalAdapterMixin):
 
     @available
     def db_materialization(self, context: dict, materialization: str):
-        # NOTE: inspired by https://github.com/dbt-labs/dbt-core/blob/be4a91a0fe35a619587b7a0145e190690e3771c6/core/dbt/task/run.py#L254-L290
         materialization_macro = self.manifest.find_materialization_macro_by_name(
             self.config.project_name, materialization, self._db_adapter.type()
         )
 
-        # HACK: run the entire SQL materialization and return the resulting dict with relations created
         return MacroGenerator(
             materialization_macro, context, stack=context["context_macro_stack"]
         )()
@@ -70,12 +72,21 @@ class FalEncAdapterWrapper(FalAdapterMixin):
         return ManifestLoader.get_full_manifest(self.config)
 
     def type(self):
-        # NOTE: This does not let `fal__` macros to be used
-        # Maybe for 1.5 we will get a more reliable way to detect if we are in a SQL or Python context
-        if find_funcs_in_stack({"render", "db_materialization"}):
+        # Determine context using the file type approach
+        model_file_path = self.get_current_model_file_path()  # Placeholder for actual implementation
+        context = get_context_from_file(model_file_path)
+        if context == 'sql':
             return self._db_adapter.type()
+        elif context == 'python':
+            return 'fal'
+        else:
+            raise ValueError(f"Unknown file extension in {model_file_path}")
 
-        return "fal"
+    def get_current_model_file_path(self) -> str:
+        # Implement logic to retrieve the current model's file path
+        # This function should access the dbt context or environment to get the current model file path
+        # Placeholder: return a static path or integrate with dbt internals
+        return "/path/to/current/model/file.sql"  # Example placeholder
 
     def __getattr__(self, name):
         """
@@ -84,13 +95,26 @@ class FalEncAdapterWrapper(FalAdapterMixin):
         if hasattr(self._db_adapter, name):
             return getattr(self._db_adapter, name)
         else:
-            getattr(super(), name)
+            return getattr(super(), name)
+
+
+def get_context_from_file(file_path: str) -> str:
+    """
+    Determine the execution context based on the file extension.
+    :param file_path: Path to the model file being executed.
+    :return: 'sql' if it's a SQL file, 'python' if it's a Python file, otherwise 'unknown'.
+    """
+    _, file_extension = os.path.splitext(file_path)
+    if file_extension == '.sql':
+        return 'sql'
+    elif file_extension == '.py':
+        return 'python'
+    return 'unknown'
 
 
 def find_funcs_in_stack(funcs: Set[str]) -> bool:
     import inspect
 
-    # NOTE: from https://stackoverflow.com/a/42636264/1276441
     frame = inspect.currentframe()
     while frame:
         if frame.f_code.co_name in funcs:
